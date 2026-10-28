@@ -2,14 +2,19 @@
 // LAYER 3: CARD RECORDS & INSTANCES
 // ==========================================
 
-export type FieldValue = string | number | boolean | (string | number)[];
+import type { FieldValue } from './Game';
+
+export type { FieldValue, ScalarFieldValue } from './Game';
 
 export interface CardFace {
   faceId: string;            // e.g., "front", "back", "transformed"
   name?: string;             // Overridden name if face differs
+  cardType?: string;         // Overrides the card-level type for this face
+  subtypes?: string[];       // Overrides card-level subtypes for this face
   rulesText: string;         // Formatted text supporting keyword parsing
   flavorText?: string;
-  artAssetId: string | null; // Content-hashed local IndexedDB art asset ID (never raw paths)
+  artAssetId: string | null; // Content-hashed art-box image used inside the template
+  fullCardAssetId?: string | null; // Content-hashed scan/export of the finished card
   faceAttributes: Record<string, FieldValue>; // Dynamic values for fields targeted to 'face'
 }
 

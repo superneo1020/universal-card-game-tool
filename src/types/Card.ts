@@ -8,13 +8,40 @@ export type BlockType =
   | 'textbox'      // Formatted rules text with keyword highlighting
   | 'stat_badge'   // Attack/Defense or resource metrics
   | 'splitter'     // Visual divider line
-  | 'tag_list';    // Pill badges for card subtypes or tags
+  | 'tag_list'     // Pill badges for card subtypes or tags
+  | 'structured_list'; // Configured repeating values such as costs
+
+/**
+ * Finite identifiers for the statically declared Tailwind design-token map.
+ *
+ * Persist these identifiers instead of Tailwind class strings so the renderer
+ * can resolve them through a whitelisted class map that Vite can statically
+ * discover. Raw utility classes are rejected by runtime validation.
+ */
+export type DesignTokenId =
+  | 'header.primary'
+  | 'header.secondary'
+  | 'art.default'
+  | 'art.fullBleed'
+  | 'textbox.body'
+  | 'textbox.flavor'
+  | 'textbox.rules'
+  | 'stat.primary'
+  | 'stat.secondary'
+  | 'splitter.default'
+  | 'splitter.strong'
+  | 'tag.neutral'
+  | 'tag.accent'
+  | 'tag.muted'
+  | 'structured.default'
+  | 'structured.compact';
 
 export interface TemplateBlock {
   id: string;
   type: BlockType;
-  designTokenStyle: string;  // Mapped Tailwind utility token class (e.g., "bg-amber-900/10 border-amber-800")
-  mappingKey?: string;       // Binds block to a specific FieldDefinition or core property
+  designTokenStyle: DesignTokenId; // Whitelisted token ID, never a raw class string
+  mappingKey?: string;             // Binds block to a FieldDefinition or core property
+  hideWhenEmpty?: boolean;         // Omit the block when its mapped value is empty
   order: number;
 }
 
