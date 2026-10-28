@@ -1,24 +1,23 @@
-# Developer Card-Design Tool: System Architecture & Engineering Rules (v2)
+# Developer Card-Design Tool: Product, Architecture & UI Rules (v3)
 
-## 1. Core Architectural Principle
-Keep card data, game rules, and visual rendering strictly decoupled. A card’s structured data drives search, categorization, validation, and serialization; its template controls visual presentation via bounded design tokens.
+## 1. Core Product Principle
+Keep card data, game rules, and visual rendering strictly decoupled. Structured card data drives search, categorization, validation, and serialization; templates control visual presentation through a finite set of supported blocks and design tokens.
 
-**The Golden Rule:** The application's internal data model must remain strictly structured and compile-time type-safe, while each specific game's card fields, stats, and visual layouts are dynamically configured at runtime.
+**The Golden Rule:** Keep internal models compile-time type-safe while allowing each game's fields, stats, and visual layouts to be configured at runtime. Never implement an individual game's mechanics as hardcoded application logic when they can be expressed through the configured schema.
 
 ---
 
 ## 2. Product Architecture (4-Layer Runtime-Configurable System)
 Do not hardcode game-specific fields. Model the application cleanly across four distinct layers:
 
-- **Layer 1: Game Profile:** Defines runtime-configurable fields, validation rules, card types, and subtypes. Supported field types are driven by an explicit discriminated union:
-  `type FieldType = { type: 'text' } | { type: 'number' } | { type: 'boolean' } | { type: 'enum'; options: string[] } | { type: 'list'; itemType: 'text' | 'number' };`. Keep variants uniformly discriminated so exhaustive `switch` handling is possible. Runtime validation must ensure each value and default matches its field definition.
-  Includes declarative deck-building rules (`minSize`, `maxSize`, `maxCopiesPerCard`) that produce soft UI warnings only in v1; do not block editing or claim rules-engine legality.
-- **Layer 2: Card Templates (Block Compositions):** Users design cards by arranging and re-ordering a predefined, finite set of structural UI blocks (e.g., `header`, `art_box`, `textbox`, `stat_badge`, `splitter`, `tag_list`) mapped directly to fixed Tailwind Design Tokens. No arbitrary JSX/CSS string execution or insertion is allowed.
-- **Layer 3: Card Records & Faces:** Concrete instances supporting single, double-faced, or multi-face layouts. Stores runtime lookup tables for root and face attributes, mapping artwork exclusively via content-hashed local asset IDs (`artAssetId`), never raw filenames or volatile relative paths.
+- **Layer 1: Game Profile:** Defines card types, subtypes, keywords, runtime-configurable fields, and validation rules. Use a uniformly discriminated `FieldType` union, including text, number, boolean, enum, scalar list, and structured repeating entries. Structured child fields may nest up to `MAX_STRUCTURED_DEPTH` (currently 3). Runtime validation must ensure every value and default matches its field definition, target, and applicable card type. Fields may target the card root or an individual face. Deck rules (`minSize`, `maxSize`, `maxCopiesPerCard`) produce soft warnings in v1; never block edits or claim rules-engine legality.
+- **Layer 2: Card Templates (Block Compositions):** Users arrange and reorder a finite set of supported blocks: `header`, `art_box`, `textbox`, `stat_badge`, `splitter`, `tag_list`, and `structured_list`. Blocks map to finite, statically declared design-token IDs; resolve IDs through a whitelist. Do not execute arbitrary JSX, CSS, class strings, or user-provided code.
+- **Layer 3: Card Records & Faces:** Cards support one or multiple faces, with face-level identity overrides and root/face attribute maps. `artAssetId` references art placed inside a generated template; `fullCardAssetId` references a completed-card scan that replaces the generated preview. Both IDs must reference verified, content-hashed local assets. Filenames and relative paths may be optional relinking hints only, never asset identity.
 - **Layer 4: Collections, Packs & Decks (v1 Scope):**
   - *Packs:* Manually curated static collections of card IDs. Randomized booster/loot-table generation is deferred to v2.
   - *Decks:* Store card IDs and quantities as `DeckEntry[]`.
   - *Tags & collections:* Card and deck tags power search, filtering, and dynamic group views. Tags are not a substitute for pack membership or deck quantities; do not introduce a separate persisted collection model unless a feature requires saved custom groups.
+- A project currently contains one game profile. Keep project identity distinct from profile identity; do not present a multi-project or multi-profile switcher unless it is implemented.
 
 ---
 
@@ -33,7 +32,7 @@ Do not hardcode game-specific fields. Model the application cleanly across four 
 
 ---
 
-## 4. Multi-Role Collaboration & Secure Pipelines (Designer ⇄ UI Artist)
+## 4. Import, Sharing & Review Pipelines
 - **Dual-Track Sharing & Guardrails:**
   1. **Master Copy (File-First):** Project data and state transfers use a versioned `.json` manifest (`ProjectManifest`). Custom runtime TypeScript Type Guards must rigorously validate imported JSON payloads before updating state.
      The JSON manifest carries project data and asset references; include image bytes only in an associated ZIP asset archive, never as base64 in JSON. Validate imported data from `unknown`, migrate supported older schema versions, check references and field-value compatibility, and resolve ID conflicts through an explicit import preview/policy before applying changes atomically. Do not reject legitimate same-project IDs without offering an intentional replace/merge path.
@@ -42,6 +41,17 @@ Do not hardcode game-specific fields. Model the application cleanly across four 
 
 ---
 
-## 5. Coding & Styling Standards
+## 5. UI & Usability Standards
+- **Product direction:** Treat the app as a card-authoring workbench with a visual card catalog, not a marketing site. Use calm, precise configuration surfaces and image-led card browsing.
+- **Navigation:** Keep desktop navigation persistent. At narrow widths, use compact navigation that preserves space for the active work area; avoid multi-row navigation consuming the initial viewport.
+- **Card discovery:** Make the card library gallery-first, with search, filters, and a useful list alternative. Use verified full-card images when present; otherwise show the generated preview. Keep active filters visible and compact on mobile.
+- **Editing:** Keep card editing divided into focused sections with validation that navigates to the relevant field. On wide screens, keep a live preview and validation summary alongside the form; on small screens, stack or collapse the preview. Keep save/cancel actions readily available.
+- **Curation:** Use visual card selection in pack and deck workflows. Keep deck quantities explicit and soft-rule warnings informative but non-blocking.
+- **Complex fields:** Present structured/repeating fields as readable typed controls (for example, resource plus amount for a cost). Show a human-readable summary in previews. Do not imply support for mechanics the configured schema cannot represent.
+- **Progressive disclosure:** Group profile, schema, and template settings into scannable sections. Keep advanced configuration and project-file operations from overwhelming first-time setup; do not silently hide required settings.
+- **Responsive and accessible behavior:** Avoid horizontal overflow at phone widths. Preserve semantic labels, keyboard operation, visible focus, adequate contrast, and clear loading, empty, saved, validation, and error states. Respect reduced-motion preferences.
+- **Visual restraint:** Use grids where users browse or compare cards; prefer compact, clear forms for configuration. Treat benchmark sites as optional inspiration, not implementation specifications. Avoid decorative Bento layouts, glows, animation, or scrollytelling when they add friction to routine authoring.
+
+## 6. Coding & Styling Standards
 - **Strict TypeScript React:** **Zero `any`.** Enforce strict interface props, handle versioned migration types for JSON mutations, and use exhaustive switch-cases for rendering dynamic `FieldType` and template blocks. TypeScript types do not validate runtime-configured schemas or imported JSON: validate at runtime and keep untrusted input typed as `unknown` until checked. Treat current types as evolving implementation details; update them alongside the versioned manifest and migrations rather than preserving an early shape for compatibility.
-- **Compile-Time Tailwind Preservation:** Persist finite design-token identifiers, not arbitrary Tailwind class strings. Resolve identifiers through statically declared, whitelisted class maps so Vite can discover every class; never generate class names from user data. Ensure Tailwind is installed and configured before relying on its utilities.
+- **Design-token preservation:** Persist finite design-token identifiers, not arbitrary CSS or class strings. Resolve identifiers through statically declared, whitelisted maps; never generate style values from user data. Follow the styling system already configured in the project; do not add Tailwind-specific requirements unless Tailwind is deliberately adopted and configured.
