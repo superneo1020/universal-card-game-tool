@@ -1,7 +1,17 @@
 {
   "name": "universal-card-game-tool",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
+  "description": "A local-first workbench for designing card games, card templates, packs, and decks.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/superneo1020/universal-card-game-tool.git"
+  },
+  "homepage": "https://github.com/superneo1020/universal-card-game-tool#readme",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",
