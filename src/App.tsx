@@ -141,7 +141,7 @@ function App() {
   };
 
   useEffect(() => {
-    document.title = `${activeSection.label} · Card Studio`;
+    document.title = `${activeSection.label} · Universal Card Game Tool`;
   }, [activeSection.label]);
 
   function renderLoadingProfile() {
@@ -372,8 +372,7 @@ function App() {
             <SectionIcon paths={getSection('cards').iconPaths} />
           </span>
           <span className="brand__text">
-            <span className="brand__name">Card Studio</span>
-            <span className="brand__tagline">Universal card game designer</span>
+            <span className="brand__name">Universal Card Game Tool</span>
           </span>
         </div>
 

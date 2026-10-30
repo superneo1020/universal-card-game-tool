@@ -1,12 +1,12 @@
-# Card Studio
+# Universal Card Game Tool
 
-Card Studio is a local-first workbench for designing card games. Define a game's
-card schema, create and visually browse cards, compose reusable card templates,
-curate packs, and build decks—all in your browser.
+Universal Card Game Tool is a local-first workbench for designing card games.
+Define a game's card schema, create and visually browse cards, compose reusable
+card templates, curate packs, and build decks—all in your browser.
 
-> **Early-stage project:** Card Studio is under active development. Back up
-> important work with the ZIP export before clearing browser data or changing
-> devices.
+> **Early-stage project:** Universal Card Game Tool is under active development.
+> Back up important work with the ZIP export before clearing browser data or
+> changing devices.
 
 ## Features
 
@@ -30,9 +30,9 @@ curate packs, and build decks—all in your browser.
 - **Local persistence:** Project data and image bytes are stored in the
   browser's IndexedDB; no account or application server is required.
 
-Deck-size and copy limits are advisory warnings in this version. Card Studio
-does not determine whether a deck is legal under any game's complete rules.
-A browser currently contains one project with one game profile.
+Deck-size and copy limits are advisory warnings in this version. Universal Card
+Game Tool does not determine whether a deck is legal under any game's complete
+rules. A browser currently contains one project with one game profile.
 
 ## Getting started
 
@@ -68,9 +68,9 @@ pnpm run preview
 
 ## Data and backups
 
-Card Studio runs without a backend, but its project data is **not automatically
-synced or backed up**. It is stored in the current browser on the current
-device. Clearing that browser's site data can remove the project.
+Universal Card Game Tool runs without a backend, but its project data is **not
+automatically synced or backed up**. It is stored in the current browser on the
+current device. Clearing that browser's site data can remove the project.
 
 - **Export JSON** contains project metadata and asset references; it does not
   contain image bytes.
@@ -91,7 +91,12 @@ and their replace/merge policy before applying them.
 ## License and game content
 
 The project source code is licensed under the [MIT License](./LICENSE).
-Third-party packages retain their own licenses. Card names, game rules, logos,
-and artwork from third-party games may be protected by their respective owners;
-they are not included as licensed game content by this project. Only add
-content you have permission to use and distribute.
+Third-party packages retain their own licenses. Attribution for template files
+present in Git history is in [THIRD-PARTY-NOTICES](./THIRD-PARTY-NOTICES).
+The Universal Card Game Tool favicon was created with AI assistance as an
+original SVG graphic; it does not depict a real card or third-party game
+artwork.
+Card names, game rules, logos, and artwork from third-party games may be
+protected by their respective owners; they are not included as licensed game
+content by this project. Only add content you have permission to use and
+distribute.

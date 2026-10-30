@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- 卡片與漸層設定 -->
+    <linearGradient id="primaryCard" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#60a5fa" />
+      <stop offset="100%" stop-color="#a855f7" />
+    </linearGradient>
+
+    <!-- 陰影效果 -->
+    <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000000" flood-opacity="0.4" />
+    </filter>
+  </defs>
+
+  <!-- 背景已設為完全透明（無底色矩形） -->
+
+  <g filter="url(#dropShadow)">
+    <!-- 背部堆疊卡片 -->
+    <rect x="110" y="80" width="220" height="300" rx="16" fill="#334155" opacity="0.7" transform="rotate(-12 220 230)" />
+
+    <!-- 中間堆疊卡片 -->
+    <rect x="160" y="80" width="220" height="300" rx="16" fill="#475569" opacity="0.85" transform="rotate(-5 270 230)" />
+
+    <!-- 前方主卡片 -->
+    <g transform="translate(146, 86)">
+      <!-- 卡片外框 -->
+      <rect x="0" y="0" width="220" height="300" rx="16" fill="#1e293b" stroke="url(#accentGradient)" stroke-width="3" />
+
+      <!-- 卡片頂部插圖 -->
+      <rect x="16" y="16" width="188" height="110" rx="10" fill="url(#primaryCard)" />
+      <circle cx="110" cy="71" r="28" fill="#ffffff" opacity="0.15" />
+      <path d="M 95 71 L 110 56 L 125 71 L 110 86 Z" fill="#ffffff" opacity="0.8" />
+
+      <!-- 標題與內文排版線條 -->
+      <rect x="16" y="142" width="110" height="12" rx="4" fill="#f8fafc" />
+      <rect x="136" y="142" width="28" height="12" rx="6" fill="#38bdf8" />
+      <line x1="16" y1="166" x2="204" y2="166" stroke="#334155" stroke-width="2" stroke-dasharray="4 4" />
+      <rect x="16" y="178" width="176" height="8" rx="3" fill="#94a3b8" />
+      <rect x="16" y="194" width="160" height="8" rx="3" fill="#94a3b8" />
+      <rect x="16" y="210" width="130" height="8" rx="3" fill="#94a3b8" />
+
+      <!-- 底部標籤 -->
+      <rect x="16" y="254" width="36" height="24" rx="6" fill="#334155" />
+      <rect x="60" y="254" width="36" height="24" rx="6" fill="#334155" />
+      <circle cx="188" cy="266" r="12" fill="url(#accentGradient)" />
+    </g>
+
+    <!-- 右下角編輯徽章（採用標準工整的 Material Design 鉛筆圖示） -->
+    <g transform="translate(320, 260)">
+      <circle cx="36" cy="36" r="36" fill="#a855f7" />
+      <path transform="translate(20, 20) scale(1.33)" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="#ffffff" />
+    </g>
+  </g>
+</svg>
